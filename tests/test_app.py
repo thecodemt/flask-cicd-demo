@@ -39,42 +39,54 @@ class FlaskAppTests(unittest.TestCase):
     def test_template_content(self):
         # Test template content
         response = self.app.get('/')
+        # Check header
+        self.assertIn(b'<header>', response.data)
+        self.assertIn(b'Welcome to Flask Demo', response.data)
         # Check navigation
         self.assertIn(b'<nav>', response.data)
         self.assertIn(b'Home', response.data)
         self.assertIn(b'About', response.data)
+        self.assertIn(b'Contact', response.data)
+        # Check main content
+        self.assertIn(b'<main>', response.data)
+        self.assertIn(b'Flask Framework Introduction', response.data)
         # Check footer
-        self.assertIn(b'footer', response.data)
+        self.assertIn(b'<footer>', response.data)
         self.assertIn(b'&copy; 2024', response.data)
-
-    def test_about_page_content(self):
-        # Test about page specific content
-        response = self.app.get('/about')
-        self.assertIn(b'Python 3.9', response.data)
-        self.assertIn(b'Flask 2.3.3', response.data)
-        self.assertIn(b'HTML5 & CSS3', response.data)
-
-    def test_home_page_features(self):
-        # Test home page features
-        response = self.app.get('/')
-        self.assertIn(b'Easy to Use', response.data)
-        self.assertIn(b'Highly Extensible', response.data)
-        self.assertIn(b'Rapid Development', response.data)
-
-    def test_social_links(self):
-        # Test social media links
-        response = self.app.get('/')
-        self.assertIn(b'social-links', response.data)
-        self.assertIn(b'fab fa-github', response.data)
-        self.assertIn(b'fab fa-twitter', response.data)
-        self.assertIn(b'fab fa-linkedin', response.data)
 
     def test_css_classes(self):
         # Test CSS classes
         response = self.app.get('/')
+        self.assertIn(b'container', response.data)
         self.assertIn(b'card', response.data)
+        self.assertIn(b'button', response.data)
         self.assertIn(b'feature-grid', response.data)
-        self.assertIn(b'feature-item', response.data)
+
+    def test_buttons(self):
+        # Test button classes
+        response = self.app.get('/')
+        self.assertIn(b'button success', response.data)
+        self.assertIn(b'button secondary', response.data)
+
+    def test_icons(self):
+        # Test Font Awesome icons
+        response = self.app.get('/')
+        self.assertIn(b'fa-home', response.data)
+        self.assertIn(b'fa-info-circle', response.data)
+        self.assertIn(b'fa-envelope', response.data)
+        self.assertIn(b'fa-github', response.data)
+        self.assertIn(b'fa-twitter', response.data)
+        self.assertIn(b'fa-linkedin', response.data)
+
+    def test_feature_cards(self):
+        # Test feature cards content
+        response = self.app.get('/')
+        self.assertIn(b'Easy to Use', response.data)
+        self.assertIn(b'Highly Extensible', response.data)
+        self.assertIn(b'Rapid Development', response.data)
+        self.assertIn(b'fa-code', response.data)
+        self.assertIn(b'fa-puzzle-piece', response.data)
+        self.assertIn(b'fa-rocket', response.data)
 
 if __name__ == '__main__':
     unittest.main() 
