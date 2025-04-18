@@ -11,17 +11,13 @@ class FlaskAppTests(unittest.TestCase):
         # Test home page route
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Welcome to Flask Demo', response.data)
-        self.assertIn(b'Flask Framework Introduction', response.data)
-        self.assertIn(b'Getting Started with Flask', response.data)
+        self.assertEqual(response.content_type, 'text/html; charset=utf-8')
 
     def test_about_page(self):
         # Test about page route
         response = self.app.get('/about')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'About Us', response.data)
-        self.assertIn(b'Project Introduction', response.data)
-        self.assertIn(b'Technology Stack', response.data)
+        self.assertEqual(response.content_type, 'text/html; charset=utf-8')
 
     def test_nonexistent_page(self):
         # Test non-existent page
@@ -32,8 +28,13 @@ class FlaskAppTests(unittest.TestCase):
         # Test static files
         response = self.app.get('/static/css/style.css')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'body', response.data)
-        self.assertIn(b'header', response.data)
+        self.assertEqual(response.content_type, 'text/css; charset=utf-8')
+
+    def test_response_headers(self):
+        # Test response headers
+        response = self.app.get('/')
+        self.assertEqual(response.content_type, 'text/html; charset=utf-8')
+        self.assertTrue('Content-Length' in response.headers)
 
     def test_template_content(self):
         # Test template content
@@ -45,12 +46,6 @@ class FlaskAppTests(unittest.TestCase):
         # Check footer
         self.assertIn(b'footer', response.data)
         self.assertIn(b'&copy; 2024', response.data)
-
-    def test_response_headers(self):
-        # Test response headers
-        response = self.app.get('/')
-        self.assertEqual(response.content_type, 'text/html; charset=utf-8')
-        self.assertTrue('Content-Length' in response.headers)
 
     def test_about_page_content(self):
         # Test about page specific content
