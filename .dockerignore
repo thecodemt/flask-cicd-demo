@@ -25,7 +25,6 @@ var/
 *.egg
 
 # 测试
-tests/
 .coverage
 htmlcov/
 
