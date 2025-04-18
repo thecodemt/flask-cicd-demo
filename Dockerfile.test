@@ -1,24 +1,53 @@
-FROM python:3.9-slim
+# 构建阶段
+FROM python:3.9-slim as builder
 
 WORKDIR /app
 
-# 复制应用代码
-COPY app.py .
+# 复制依赖文件
 COPY requirements.txt .
-COPY templates/ ./templates/
-COPY static/ ./static/
-COPY tests/ ./tests/
 
-# 安装测试依赖
+# 安装依赖
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install pytest pytest-cov
 
-# 设置测试环境变量
+# 测试阶段
+FROM python:3.9-slim
+
+# 创建非 root 用户
+RUN addgroup --system app && adduser --system --group app
+
+WORKDIR /app
+
+# 设置环境变量
 ENV PYTHONPATH=/app
 ENV FLASK_ENV=testing
+ENV PATH="/home/app/.local/bin:${PATH}"
 
-# 创建测试报告目录
-RUN mkdir -p /app/test-reports
+# 从构建阶段复制已安装的依赖
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# 复制应用代码
+COPY --chown=app:app app.py .
+COPY --chown=app:app requirements.txt .
+COPY --chown=app:app templates/ ./templates/
+COPY --chown=app:app static/ ./static/
+COPY --chown=app:app tests/ ./tests/
+
+# 创建测试报告目录并设置权限
+RUN mkdir -p /app/test-reports && \
+    chown -R app:app /app/test-reports
+
+# 切换到非 root 用户
+USER app
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:5000/health')" || exit 1
 
 # 设置容器启动命令
-CMD ["python", "-m", "pytest", "tests/", "--junitxml=/app/test-reports/junit.xml"] 
+CMD ["python", "-m", "pytest", "tests/", \
+     "--junitxml=/app/test-reports/junit.xml", \
+     "--cov=app", \
+     "--cov-report=xml:/app/test-reports/coverage.xml", \
+     "--cov-report=term"] 
