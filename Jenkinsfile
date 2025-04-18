@@ -49,7 +49,6 @@ pipeline {
                     echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                     docker push ${DOCKER_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
                     docker push ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
-                    docker push ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG}
                 '''
             }
         }
