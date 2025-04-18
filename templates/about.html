@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Flask Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>About Us</h1>
+        <nav>
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+        </nav>
+    </header>
+    <main>
+        <section class="card">
+            <h2>Project Introduction</h2>
+            <p>This is a demo project built with Flask framework, aiming to showcase Flask's basic features and best practices. The project includes the following features:</p>
+            <ul>
+                <li>Responsive design for all devices</li>
+                <li>Modern UI interface</li>
+                <li>Clear code structure</li>
+                <li>Best practice examples</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Technology Stack</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="fab fa-python fa-2x"></i>
+                    <h3>Python 3.9</h3>
+                    <p>Using Python 3.9 as backend language</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-flask fa-2x"></i>
+                    <h3>Flask 2.3.3</h3>
+                    <p>Lightweight web framework</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fab fa-html5 fa-2x"></i>
+                    <h3>HTML5 & CSS3</h3>
+                    <p>Modern frontend technologies</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Project Structure</h2>
+            <pre>
+flask-cicd-demo/
+├── app.py
+├── requirements.txt
+├── static/
+│   └── css/
+│       └── style.css
+└── templates/
+    ├── index.html
+    └── about.html
+            </pre>
+        </section>
+
+        <section class="card">
+            <h2>Contact Us</h2>
+            <p>If you have any questions or suggestions, feel free to contact us through:</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Flask Demo Website</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </footer>
+</body>
+</html> 

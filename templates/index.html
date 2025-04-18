@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Demo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Flask Demo</h1>
+        <nav>
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+        </nav>
+    </header>
+    <main>
+        <section class="card">
+            <h2>Flask Framework Introduction</h2>
+            <p>Flask is a lightweight Python web framework that is simple to use yet highly extensible. This demo showcases Flask's basic features and best practices.</p>
+            <a href="/about" class="btn">Learn More</a>
+        </section>
+
+        <section class="feature-grid">
+            <div class="feature-item">
+                <i class="fas fa-code fa-2x"></i>
+                <h3>Easy to Use</h3>
+                <p>Flask provides a simple API that makes development intuitive.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-puzzle-piece fa-2x"></i>
+                <h3>Highly Extensible</h3>
+                <p>Add various features easily through rich extension libraries.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-rocket fa-2x"></i>
+                <h3>Rapid Development</h3>
+                <p>Built-in development server and debugger speed up the process.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Getting Started with Flask</h2>
+            <p>To get started with Flask, just follow these simple steps:</p>
+            <ol>
+                <li>Install Flask: <code>pip install flask</code></li>
+                <li>Create application file</li>
+                <li>Define routes and view functions</li>
+                <li>Run development server</li>
+            </ol>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Flask Demo Website</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </footer>
+</body>
+</html> 
