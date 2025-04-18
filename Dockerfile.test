@@ -2,8 +2,14 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# 安装测试依赖
+# 复制应用代码
+COPY app.py .
 COPY requirements.txt .
+COPY templates/ ./templates/
+COPY static/ ./static/
+COPY tests/ ./tests/
+
+# 安装测试依赖
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install pytest pytest-cov
 

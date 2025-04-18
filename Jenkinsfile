@@ -23,10 +23,8 @@ pipeline {
                     
                     # 在容器中运行测试
                     docker run --rm \
-                        -v ${WORKSPACE}/tests:/app/tests \
-                        -v ${WORKSPACE}/app.py:/app/app.py \
-                        ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG} \
-                        python -m pytest tests/ -v
+                        -v ${WORKSPACE}/test-reports:/app/test-reports \
+                        ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG}
                 '''
             }
             post {
