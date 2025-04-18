@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./static:/app/static
+      - ./static:/app/static:ro
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
