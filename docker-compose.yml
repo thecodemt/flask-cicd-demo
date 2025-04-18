@@ -5,8 +5,6 @@ services:
     image: ${DOCKER_USERNAME}/flask-demo:${IMAGE_TAG:-latest}
     expose:
       - "5000"
-    volumes:
-      - .:/app
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
