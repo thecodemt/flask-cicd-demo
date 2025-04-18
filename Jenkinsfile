@@ -15,15 +15,19 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies') {
+        stage('Run Tests in Docker') {
             steps {
-                sh 'pip install -r requirements.txt'
-            }
-        }
-        
-        stage('Run Tests') {
-            steps {
-                sh 'python -m pytest tests/'
+                sh '''
+                    # 构建测试镜像
+                    docker build -t ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG} -f Dockerfile.test .
+                    
+                    # 在容器中运行测试
+                    docker run --rm \
+                        -v ${WORKSPACE}/tests:/app/tests \
+                        -v ${WORKSPACE}/app.py:/app/app.py \
+                        ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG} \
+                        python -m pytest tests/ -v
+                '''
             }
             post {
                 always {
@@ -47,6 +51,7 @@ pipeline {
                     echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
                     docker push ${DOCKER_USERNAME}/${IMAGE_NAME}:${IMAGE_TAG}
                     docker push ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
+                    docker push ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG}
                 '''
             }
         }
@@ -54,9 +59,18 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    # 创建 .env 文件
+                    echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
+                    echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
+                    
+                    # 部署应用
                     docker-compose down
                     docker-compose pull
                     docker-compose up -d
+                    
+                    # 验证部署
+                    sleep 10
+                    curl -f http://localhost || exit 1
                 '''
             }
         }
