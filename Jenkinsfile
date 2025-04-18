@@ -18,20 +18,15 @@ pipeline {
         stage('Run Tests in Docker') {
             steps {
                 sh '''
-                    # 打印工作目录内容
-                    echo "当前工作目录内容："
-                    ls -la
-                    echo "测试目录内容："
-                    ls -la tests/
-                    
                     # 构建测试镜像
                     docker build -t ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG} -f Dockerfile.test .
                     
                     # 在容器中运行测试
                     docker run --rm \
-                        -v ${WORKSPACE}:/app \
+                        -v ${WORKSPACE}/tests:/app/tests \
+                        -v ${WORKSPACE}/app.py:/app/app.py \
                         ${DOCKER_USERNAME}/${IMAGE_NAME}-test:${IMAGE_TAG} \
-                        sh -c "ls -la /app/tests && python -m pytest tests/ -v"
+                        python -m pytest tests/ -v
                 '''
             }
             post {
