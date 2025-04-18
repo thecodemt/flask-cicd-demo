@@ -6,6 +6,7 @@ pipeline {
         DOCKER_PASSWORD = credentials('docker-hub-password')
         IMAGE_NAME = 'flask-demo'
         IMAGE_TAG = "${env.BUILD_NUMBER}"
+        DEPLOY_TIMEOUT = '60'
     }
     
     stages {
@@ -56,6 +57,18 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    # 验证环境变量
+                    if [ -z "${DOCKER_USERNAME}" ] || [ -z "${IMAGE_TAG}" ]; then
+                        echo "Error: Required environment variables are not set"
+                        exit 1
+                    fi
+                    
+                    # 备份当前部署
+                    if docker-compose ps | grep -q "Up"; then
+                        docker-compose ps > deployment_backup.txt
+                        echo "Current deployment backed up"
+                    fi
+                    
                     # 创建 .env 文件
                     echo "DOCKER_USERNAME=${DOCKER_USERNAME}" > .env
                     echo "IMAGE_TAG=${IMAGE_TAG}" >> .env
@@ -65,9 +78,29 @@ pipeline {
                     docker-compose pull
                     docker-compose up -d
                     
+                    # 等待服务启动
+                    echo "Waiting for services to start..."
+                    timeout ${DEPLOY_TIMEOUT} bash -c '
+                        while ! curl -f http://localhost:5000/health > /dev/null 2>&1; do
+                            echo "Waiting for service to be healthy..."
+                            sleep 5
+                        done
+                    '
+                    
                     # 验证部署
-                    sleep 10
-                    curl -f http://localhost || exit 1
+                    if [ $? -eq 0 ]; then
+                        echo "Deployment successful!"
+                        # 清理旧镜像
+                        docker image prune -f
+                    else
+                        echo "Deployment failed, initiating rollback..."
+                        # 回滚到上一个版本
+                        if [ -f deployment_backup.txt ]; then
+                            docker-compose down
+                            docker-compose up -d
+                        fi
+                        exit 1
+                    fi
                 '''
             }
         }
@@ -75,6 +108,11 @@ pipeline {
     
     post {
         always {
+            sh '''
+                # 清理工作空间
+                rm -f .env deployment_backup.txt
+                docker-compose down || true
+            '''
             cleanWs()
         }
         success {
